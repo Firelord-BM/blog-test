@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn{ @apply px-2 py-2 bg-gray-500 hover:scale-110 transition rounded-md}
+
+
+h1{
+@apply text-xl font-bold }
+
+.primary-btn{
+    @apply bg-black text-white hover:scale-105 transition py-2 px-4 rounded-md
+}
+
+input, textarea{
+@apply px-4 py-2 border border-slate-400 rounded-md
+}
+
+textarea{
+    @apply h-36
+}
+
+.link{
+@apply underline text-purple-700 text-sm}
