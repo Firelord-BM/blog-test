@@ -3,10 +3,10 @@ import prisma from "@/app/lib/prismadb";
 
 export async function GET(){
    try {
-   const categories = await prisma.category.findMany()
-   return NextResponse.json(categories)
+      const categories = await prisma.category.findMany()
+      return NextResponse.json(categories)
    } catch (error) {
-    console.log(error)
-    return NextResponse.json("Something went wrong")
+      console.log(error)
+      return NextResponse.json("Something went wrong")
    }
 }
