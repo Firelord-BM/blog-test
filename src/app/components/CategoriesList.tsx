@@ -1,11 +1,25 @@
 import React from 'react'
-import {CategoriesData} from "@/app/data"
 import Link from 'next/link'
+import { TCategory } from '../types'
 
-export default function CategoriesList() {
+const getCategories = async(): Promise<TCategory[] | null> => {
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/categories`);
+    if(res.ok){
+      const categories = await res.json();
+      return categories;
+    }
+  } catch (error) {
+    console.log(error)
+    
+  }
+  return null;
+}
+export default async function CategoriesList() {
+  const categories = await getCategories();
   return (
     <div className='flex gap-2 text-sm text-wrap'>
-       {CategoriesData && CategoriesData.map((category:any)=>(<Link className="bg-black text-white px-2 py-1 rounded-md" key={category.id} href={`/category/${category.name}`}>{category.name}</Link>)
+       {categories && categories.map((category:TCategory)=>(<Link className="bg-black text-white px-2 py-1 rounded-md" key={category.id} href={`/category/${category.catName}`}>{category.catName}</Link>)
        )}
     </div>
   )

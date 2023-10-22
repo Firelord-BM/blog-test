@@ -1,32 +1,83 @@
 "use client";
-import React, { useState } from "react";
-import { CategoriesData } from "../data";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { TCategory } from "../types";
+import { useRouter } from "next/navigation";
 
 const NewsForm = () => {
-  const [link, setLink] = useState<string[]>([]);
-
+  const [links, setLinks] = useState<string[]>([]);
   const [linkInput, setLinkInput] = useState("");
+  const [title,setTitle]=useState("");
+  const [content,setContent]=useState("");
+  const [categories,setCategories]=useState<TCategory[]>([]);
+  const [selectedCategory,setSelectedCategory]=useState("");
+  const [imageUrl,setImageUrl]=useState("");
+  const [publicId,setPublicId]=useState("");
+  const [error,setError] = useState("");
+
+  const router = useRouter();
+
+  useEffect(()=>{
+    const fetchAllCategories = async() => {
+      const res = await fetch('/api/categories');
+      const catNames = await res.json();
+      setCategories(catNames)
+    };
+    fetchAllCategories();
+  },[])
 
   const addLink = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (linkInput.trim() !== "") {
-      setLink((prev) => [...prev, linkInput]);
+      setLinks((prev) => [...prev, linkInput]);
       setLinkInput("");
     }
   };
 
   const deleteLink = (index:number) => {
-    setLink((prev)=> prev.filter((_,i) => i !== index));
+    setLinks((prev)=> prev.filter((_,i) => i !== index));
+  };
+
+  const handleSubmit = async (e:React.FormEvent) => {
+    e.preventDefault();
+
+    if(!title || !content){
+      setError("Title and content are required");
+      return;
+    }
+
+    try {
+      const res = await fetch("api/posts", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          links,
+          selectedCategory,
+          imageUrl,
+          publicId,
+
+        })
+      })
+
+      if(res.ok){
+        router.push("/dashboard")
+      }
+    } catch (error) {
+      console.log()
+    }
   }
   return (
     <div>
       <h1 className="py-2">CREATE POST</h1>
-      <form className="flex flex-col gap-2">
-        <input type="text" placeholder="Enter Title Here..." />
-        <textarea id="" placeholder="Content"></textarea>
-        {link &&
-          link.map((links, i) => (
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <input onChange={e => setTitle(e.target.value)} type="text" placeholder="Enter Title Here..." />
+        <textarea onChange={e => setContent(e.target.value)} id="" placeholder="Content"></textarea>
+        {links &&
+          links.map((link, i) => (
             <div className="flex gap-2 items-center" key={i}>
               <span> <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +95,7 @@ const NewsForm = () => {
               </svg></span>
               {" "}
              
-              <Link className="link" href={links}>{links}</Link>
+              <Link className="link" href={link}>{links}</Link>
               <span className="cursor-pointer" onClick={()=> deleteLink(i)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -92,19 +143,20 @@ const NewsForm = () => {
             Add
           </button>
         </div>
-        <select className="appearance-none py-2 px-2 border-2 rounded-md border-slate-300">
+        <select onChange={e => setSelectedCategory(e.target.value)} className="appearance-none py-2 px-2 border-2 rounded-md border-slate-300">
           <option>Select a category</option>
-          {CategoriesData &&
-            CategoriesData.map((category) => (
-              <option key={category.id} value={category.name}>
-                {category.name}
+          {categories &&
+            categories.map((category) => (
+              <option key={category.id} value={category.catName}>
+                {category.catName}
               </option>
             ))}
         </select>
-        <p className="text-red-500 font-bold">Error Message</p>
+       
         <button type="submit" className="primary-btn">
-          Submit
+          Create Post
         </button>
+       {error && <div className="text-red-500 p-2 font-bold">{error}</div>} 
       </form>
     </div>
   );

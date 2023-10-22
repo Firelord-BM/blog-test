@@ -1,25 +1,40 @@
 import React from "react";
 import CategoriesList from "./components/CategoriesList";
 import Posts from "./components/Posts";
-import { postData } from "./data";
+import { TPost } from "./types";
 
-const Home = () => {
+const getPosts = async(): Promise<TPost[] | null> => {
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/posts`,{cache: "no-store"})
+
+    if(res.ok){
+      const posts = await res.json();
+      return posts;
+    }
+  } catch (error) {
+    console.log(error)
+  }
+  return null;
+}
+const Home = async () => {
+  const posts = await getPosts();
   return (
     <div className="">
       <CategoriesList />
-      {postData && postData.length > 0 ? (
-        postData.map((posts) => (
-          <div key={posts.id}>
+      {posts&& posts.length > 0 ? (
+        posts.map((post) => (
+          <div key={post.id}>
             {" "}
             <Posts
-              id={posts.id}
-              author={posts.author}
-              date={posts.date}
-              content={posts.content}
-              category={posts.category}
-              title={posts.title}
-              links={posts.links}
-             thumbnail={posts.thumbnail}
+              id={post.id}
+              author={post.author.name}
+              authorEmail = {post.authorEmail}
+              date={post.createdAt}
+              content={post.content}
+              category={post.catName}
+              title={post.title}
+              links={post.links || null}
+             thumbnail={post.imageUrl}
             />
           </div>
         ))
