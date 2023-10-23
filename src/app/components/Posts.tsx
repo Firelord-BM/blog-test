@@ -38,9 +38,10 @@ const Posts = async({
   const formattedDate = dateObject.toLocaleDateString("en-US",options)
   return (
     <div className="border-b my-4">
-      <h2>
+      {author ?  <>
         Posted by: <span className="font-bold">{author}</span> on {formattedDate}
-      </h2>
+      </> : <>Posted on {formattedDate} </>}
+     
       <div className=" py-2">
         {thumbnail ? (
           <Image
