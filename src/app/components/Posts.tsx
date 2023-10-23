@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import DeleteButton from "./DeleteButton";
 interface postProps {
   id: string;
   author: string;
@@ -90,7 +91,7 @@ const Posts = async({
         </p>
       </div>
       {isEditable && (
-      <div className="flex gap-3 font-bold py-2 px-4 rounded-md bg-slate-200 w-fit"><Link href={`/edit-post/${id}`}>Edit </Link><span>Delete</span></div>
+      <div className="flex gap-3 font-bold py-2 px-4 rounded-md bg-slate-200 w-fit"><Link href={`/edit-post/${id}`}>Edit </Link><DeleteButton id={id}/></div>
     )}
     </div>
   
