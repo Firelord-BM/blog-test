@@ -4,6 +4,8 @@ export type TCategory = {
 }
 
 export type TPost = {
+    length: number;
+    map(arg0: (post: any) => import("react").JSX.Element): unknown;
     id: string;
     title: string;
     content: string;
