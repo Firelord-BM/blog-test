@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { TCategory } from '../types'
+import {postData, CategoriesData} from "@/app/data"
 
 const getCategories = async(): Promise<TCategory[] | null> => {
   try {

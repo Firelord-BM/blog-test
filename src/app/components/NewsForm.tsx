@@ -5,7 +5,7 @@ import { TCategory } from "../types";
 import { useRouter } from "next/navigation";
 import { CldUploadButton, CldUploadWidgetResults } from "next-cloudinary";
 import Image from "next/image";
-
+import {toast} from "react-hot-toast"
 const NewsForm = () => {
   const [links, setLinks] = useState<string[]>([]);
   const [linkInput, setLinkInput] = useState("");
@@ -73,8 +73,8 @@ const handleImageUpload = (results: CldUploadWidgetResults) => {
     e.preventDefault();
 
     if(!title || !content){
-      setError("Title and content are required");
-      return;
+      const errorMessage= "Title and Content are required"
+      toast.error(errorMessage)
     }
 
     try {
@@ -95,7 +95,10 @@ const handleImageUpload = (results: CldUploadWidgetResults) => {
       })
 
       if(res.ok){
+        toast.success("Post created successfully")
         router.push("/dashboard")
+      } else{
+        toast.error("Something went wrong")
       }
     } catch (error) {
       console.log()
@@ -197,7 +200,7 @@ const handleImageUpload = (results: CldUploadWidgetResults) => {
         <button type="submit" className="primary-btn">
           Create Post
         </button>
-       {error && <div className="text-red-500 p-2 font-bold">{error}</div>} 
+     
       </form>
     </div>
   );
