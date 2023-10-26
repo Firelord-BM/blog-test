@@ -108,10 +108,12 @@ export default function EditPostForm({ post }: { post: TPost }) {
       });
 
       if (res.ok) {
+        toast.success("Post Edited Successfully")
         router.push("/dashboard");
+        router.refresh();
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong")
     }
   };
   return (
